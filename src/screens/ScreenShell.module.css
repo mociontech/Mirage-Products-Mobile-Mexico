@@ -1,0 +1,47 @@
+/**
+ * Shared 3-region layout every screen in the design follows: logo near the
+ * top, flexible centered content, primary action near the bottom. Built as
+ * flex (not absolute-positioned like the Figma export) so it never needs to
+ * scroll regardless of content length or viewport size.
+ */
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6) var(--space-5);
+  background:
+    linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
+    var(--color-page-bg);
+  overflow: hidden;
+}
+
+.logo {
+  flex: none;
+  width: 60%;
+  margin-top: var(--space-4);
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.actions {
+  flex: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+}

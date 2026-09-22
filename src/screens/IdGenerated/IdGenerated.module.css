@@ -1,0 +1,93 @@
+/**
+ * Absolute layout matching Figma's "Registro / Tu ID unico" frame exactly
+ * (node 209:298, 1080x1920). Conversion: cqh = (figma_px / 1920) * 100 — see
+ * the comment in Welcome.tsx for why that's exact on this aspect-locked
+ * shell. Logo/title share Register's exact numbers — same frame position
+ * in Figma.
+ */
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: var(--space-4);
+  background:
+    linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
+    var(--color-page-bg);
+  overflow: hidden;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 21.98cqh;
+  width: 36.2cqh;
+  height: 5.27cqh;
+  transform: translateX(-50%);
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  top: 37.5cqh;
+  width: 45.94cqh;
+  height: 4.06cqh;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 5.05cqh;
+  line-height: 1;
+  color: var(--color-brand-red);
+  text-align: center;
+}
+
+.description {
+  position: absolute;
+  left: 50%;
+  top: 44.58cqh;
+  /* A bit wider than Figma's 44.32cqh box: Poppins runs wider per character
+     than Figma's Acumin, so the literal width wrapped "Guárdalo..." onto a
+     third line - this keeps it on Figma's intended two lines instead. */
+  width: 50cqh;
+  transform: translateX(-50%);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2.54cqh;
+  line-height: 1.29;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.descriptionBold {
+  font-weight: 700;
+}
+
+.idInputBox {
+  position: absolute;
+  left: 50%;
+  top: 54.17cqh;
+  width: 35.63cqh;
+  transform: translateX(-50%);
+}
+
+.buttonBox {
+  position: absolute;
+  left: 50%;
+  top: 72.6cqh;
+  width: 35.63cqh;
+  height: 6.93cqh;
+  transform: translateX(-50%);
+}
+
+.ctaButton {
+  height: 100% !important;
+  font-size: 3.39cqh !important;
+  border-radius: 0.83cqh !important;
+}

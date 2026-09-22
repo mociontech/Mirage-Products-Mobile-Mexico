@@ -1,0 +1,23 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: var(--color-brand-red);
+  color: var(--color-surface);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(16px, 3cqh, 28px);
+  border-radius: var(--radius-pill);
+  padding: clamp(12px, 2.4cqh, 24px) var(--space-6);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

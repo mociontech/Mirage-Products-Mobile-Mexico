@@ -1,0 +1,34 @@
+/**
+ * Sized to match Figma's ID boxes exactly (317x157 in the 1080x1920 frame,
+ * see IdGenerated.module.css) - cqh = (figma_px / 1920) * 100. Shared by
+ * IdGenerated (read-only display) and RegisterId (editable entry), whose
+ * Figma frames use the same box dimensions.
+ */
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28cqh;
+}
+
+.box {
+  width: 16.51cqh;
+  height: 8.18cqh;
+  background: var(--color-input-bg);
+  border: 1.5px solid var(--color-input-border);
+  border-radius: 0.83cqh;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: italic;
+  font-size: 5.16cqh;
+  color: var(--color-text-muted);
+  outline: none;
+}
+
+.dash {
+  width: 2.05cqh;
+  height: 2px;
+  background: var(--color-brand-red);
+  flex: none;
+}

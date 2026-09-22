@@ -1,0 +1,134 @@
+/**
+ * Absolute layout matching Figma's "Registro" frame exactly (node 209:235,
+ * 1080x1920). Conversion: cqh = (figma_px / 1920) * 100 — see the comment in
+ * Welcome.tsx for why that's exact on this aspect-locked shell. Every
+ * positioned element here is horizontally centered in the Figma frame
+ * (its box is symmetric around x=540, i.e. 50%), so `left: 50%` +
+ * `translateX(-50%)` replaces tracking each one's absolute left offset.
+ */
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Footer is the only normal-flow child (everything else is absolute,
+     positioned to match Figma) - push it to the bottom of the shell. */
+  justify-content: flex-end;
+  padding-bottom: var(--space-4);
+  background:
+    linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
+    var(--color-page-bg);
+  overflow: hidden;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 21.98cqh;
+  width: 36.2cqh;
+  height: 5.27cqh;
+  transform: translateX(-50%);
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  top: 37.5cqh;
+  width: 45.94cqh;
+  height: 4.06cqh;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 5.05cqh;
+  line-height: 1;
+  color: var(--color-brand-red);
+  text-align: center;
+}
+
+.fieldBox {
+  position: absolute;
+  left: 50%;
+  width: 45.94cqh;
+  height: 5.16cqh;
+  transform: translateX(-50%);
+}
+
+.fieldBox > label {
+  height: 100%;
+  width: 100%;
+  border-radius: 0.83cqh;
+}
+
+.nameField {
+  top: 45.94cqh;
+}
+
+.emailField {
+  top: 53.65cqh;
+}
+
+/*
+ * Figma sizes these two icons differently — the person glyph is narrower
+ * (~26px wide) than the envelope (~50px wide) in the 1080x1920 frame, so
+ * they can't share TextField's default width. !important guards against
+ * CSS-module import-order flakiness against that default (both are
+ * single-class selectors, so without it the winner depends on which module
+ * Vite emits last).
+ */
+.nameIcon {
+  width: 1.34cqh !important;
+}
+
+.emailIcon {
+  width: 2.6cqh !important;
+}
+
+.buttonBox {
+  position: absolute;
+  left: 50%;
+  top: 61.35cqh;
+  width: 35.63cqh;
+  height: 6.93cqh;
+  transform: translateX(-50%);
+}
+
+.ctaButton {
+  height: 100% !important;
+  font-size: 3.39cqh !important;
+  border-radius: 0.83cqh !important;
+}
+
+.link {
+  position: absolute;
+  left: 50%;
+  top: 69.9cqh;
+  width: 47.08cqh;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  /* Figma used Montserrat here, but per the Fase 0 audit that's a "ghost"
+     font not otherwise present in the file — Poppins is the real brand
+     display font, so it's used here too for consistency. */
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.4cqh;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.link:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.warningIcon {
+  width: clamp(48px, 9cqh, 80px);
+  height: auto;
+}

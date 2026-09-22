@@ -1,0 +1,1 @@
+export { IdGenerated } from "./IdGenerated";

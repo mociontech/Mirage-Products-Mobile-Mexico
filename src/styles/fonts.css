@@ -1,0 +1,37 @@
+/**
+ * Self-hosted brand fonts (latin subset only, per the no-external-fonts
+ * constraint — nothing is fetched from Google Fonts at runtime). Lora's
+ * regular and bold weights ship in one variable-font file; Poppins ships
+ * one static file per weight actually used.
+ */
+@font-face {
+  font-family: "Lora";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../assets/fonts/lora-variable-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-400-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-700-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-800-latin.woff2") format("woff2");
+}

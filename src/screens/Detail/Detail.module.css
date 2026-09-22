@@ -1,0 +1,34 @@
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.backButton {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-4);
+  width: 6cqh;
+  height: 6cqh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+
+.backButton svg {
+  width: 3cqh;
+  height: 3cqh;
+}

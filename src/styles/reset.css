@@ -1,0 +1,68 @@
+/**
+ * Minimal reset + kiosk hardening.
+ * The hardening rules here (user-select, tap-highlight, overscroll-behavior,
+ * touch-action) are CSS-only; the JS-only hardening (contextmenu, gesture
+ * zoom) lives in App.tsx since it needs event listeners.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none; /* blocks pull-to-refresh */
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--color-page-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  /* Kiosk hardening: no text selection, no callout, no tap highlight */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* blocks double-tap-to-zoom */
+}
+
+#root {
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden; /* no screen should ever scroll */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}

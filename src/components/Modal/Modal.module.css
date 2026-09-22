@@ -1,0 +1,31 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.content {
+  width: 63.3%;
+  /* rgba (not the `opacity` property) so this dims only the background,
+     not the white text stacked on top of it, matching the Figma layers. */
+  background: rgba(228, 3, 44, 0.9);
+  border-radius: var(--radius-pill);
+  padding: var(--space-6) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 3.2cqh, 32px);
+  color: var(--color-surface);
+  line-height: 1.3;
+}

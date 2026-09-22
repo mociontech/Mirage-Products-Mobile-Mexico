@@ -1,0 +1,26 @@
+/**
+ * Portrait shell: the design is authored at 1080x1920. Width and height are
+ * both derived with a symmetric min() (see --app-max-width/--app-max-height
+ * in tokens.css) instead of pinning height to 100dvh and only clamping
+ * width - that asymmetric version let the box stretch off-ratio on any
+ * phone narrower than 9:16 (basically all of them), which is what showed up
+ * as content drifting off-center on real devices. #root (reset.css)
+ * flex-centers this box, so any leftover space becomes even letterbox bars
+ * instead of a stretch or a crop.
+ *
+ * container-type: size turns every `cqh` used inside a screen's own CSS
+ * into "% of this box's height" instead of "% of the real viewport height"
+ * (plain vh) - the two happen to be equal on the kiosk's own hardware, but
+ * diverge on a phone with a different aspect ratio, which is exactly the
+ * gap that let elements decenter/misposition. Every screen's px-to-vh
+ * conversion (see the comment in Welcome.module.css) still holds, just
+ * against this container's own height instead of the device's.
+ */
+.shell {
+  position: relative;
+  width: var(--app-max-width);
+  height: var(--app-max-height);
+  container-type: size;
+  overflow: hidden;
+  background: var(--color-surface);
+}

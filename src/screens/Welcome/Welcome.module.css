@@ -1,0 +1,87 @@
+/**
+ * Absolute layout matching Figma's "Bienvenida y CTA" frame (node 209:221,
+ * 1080x1920) exactly. Conversion: cqh = (figma_px / 1920) * 100 — see the
+ * comment in Welcome.tsx for why that's exact on this aspect-locked shell.
+ */
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Footer is the only normal-flow child (everything else above is absolute,
+     positioned to match Figma) - push it to the bottom of the shell. */
+  justify-content: flex-end;
+  padding-bottom: var(--space-4);
+  background:
+    linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
+    var(--color-page-bg);
+  overflow: hidden;
+}
+
+.mark {
+  position: absolute;
+  left: 20.17cqh;
+  top: 23.75cqh;
+  width: 15.87cqh;
+  height: 5.79cqh;
+}
+
+.title {
+  position: absolute;
+  left: 5.16cqh;
+  top: 34.69cqh;
+  width: 45.94cqh;
+  height: 16.56cqh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.95;
+  text-align: center;
+}
+
+.titleTop {
+  display: block;
+  color: var(--color-brand-red);
+  font-size: 8.59cqh;
+}
+
+.titleBottom {
+  display: block;
+  color: var(--color-text);
+  font-size: 6.77cqh;
+}
+
+.buttonBox {
+  position: absolute;
+  left: 5.16cqh;
+  top: 54.38cqh;
+  width: 45.94cqh;
+  height: 6.93cqh;
+}
+
+/*
+ * !important: guards against CSS-module import-order flakiness between this
+ * file and Button.module.css (both are single-class selectors, so without
+ * this the winner would depend on which module Vite happens to emit last).
+ */
+.ctaButton {
+  height: 100% !important;
+  font-size: 3.39cqh !important;
+}
+
+.tagline {
+  position: absolute;
+  left: 5.05cqh;
+  top: 69.22cqh;
+  width: 46.15cqh;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 0.9;
+  color: var(--color-brand-red);
+  font-size: 5cqh;
+  text-align: center;
+}

@@ -1,0 +1,11 @@
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 6.5cqh, 52px);
+  color: var(--color-brand-red);
+}
+
+.warningIcon {
+  width: clamp(48px, 9cqh, 80px);
+  height: auto;
+}

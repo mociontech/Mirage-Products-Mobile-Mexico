@@ -1,0 +1,73 @@
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-page-bg);
+  overflow: hidden;
+}
+
+.header {
+  flex: none;
+  width: 100%;
+  padding: var(--space-7) var(--space-5) var(--space-3);
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 4.6cqh;
+  color: var(--color-text);
+}
+
+.greeting {
+  margin-top: var(--space-1);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 2.2cqh;
+  color: var(--color-brand-red);
+}
+
+.grid {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+  -webkit-overflow-scrolling: touch;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 1 / 1.1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background: var(--color-surface);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2);
+  overflow: hidden;
+}
+
+.cardPhoto {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+}
+
+.cardLogo {
+  flex: none;
+  width: 90%;
+  max-height: 3.4cqh;
+  object-fit: contain;
+  margin-top: var(--space-1);
+}

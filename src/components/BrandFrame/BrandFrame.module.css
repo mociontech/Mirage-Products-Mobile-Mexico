@@ -1,0 +1,21 @@
+/* Positions replicate the offset red accent bars from Figma (top bar flush
+   left, bottom bar flush right) — expressed as % of the 1080x1920 canvas so
+   they scale with the app shell instead of being pinned to fixed pixels. */
+.bar {
+  position: absolute;
+  left: -0.093%;
+  width: 63.611%;
+  height: 1.25%;
+  background: var(--color-brand-red);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.top {
+  top: 0;
+}
+
+.bottom {
+  left: 36.389%;
+  top: 98.75%;
+}

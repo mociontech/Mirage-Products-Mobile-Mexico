@@ -1,0 +1,51 @@
+/**
+ * Design tokens — colores y tipografia tomados 1:1 de Mirage-Products-Colombia
+ * (Figma "01_Ui Kit", node 23:277) para que esta version movil use la misma
+ * paleta de marca que la version tablet+pitch. El resto (escala de
+ * espaciado, radios, y el marco aspect-ratio-locked 1080x1920 via cqh) viene
+ * de Mirage-Memory-Match-Colombia (ver comentario abajo) - es el mecanismo
+ * de layout que se decidio reutilizar para que la app funcione bien en
+ * cualquier celular sin importar su proporcion real de pantalla.
+ */
+:root {
+  /* Colores Pantone/marca */
+  --color-brand-red: #e4032c;
+  --color-brand-red-dark: #a00000;
+  --color-surface: #ffffff;
+  --color-text-muted: #5b5e5e;
+
+  --color-page-bg: #f6f4f1;
+  --color-text: #010202;
+  --color-input-border: #010202;
+  --color-input-bg: rgba(255, 255, 255, 0.15);
+  --color-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Tipografia — Poppins para display/botones (decision de marca), Lora para cuerpo */
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-body: "Lora", Georgia, serif;
+
+  --radius-pill: 0.83cqh;
+
+  /* Escala de espaciado, unidad base ligada al viewport para escalado fluido */
+  --space-1: clamp(4px, 0.4cqh, 8px);
+  --space-2: clamp(8px, 0.8cqh, 16px);
+  --space-3: clamp(12px, 1.2cqh, 24px);
+  --space-4: clamp(16px, 1.6cqh, 32px);
+  --space-5: clamp(24px, 2.4cqh, 48px);
+  --space-6: clamp(32px, 3.2cqh, 64px);
+  --space-7: clamp(48px, 4.8cqh, 96px);
+  --space-8: clamp(64px, 6.4cqh, 128px);
+
+  /*
+   * Marco de la app: proporcion de diseno 1080x1920 (portrait), igual
+   * mecanismo que Memory Match. Las dos variables se calculan de forma
+   * simetrica (min() en ambas dimensiones, nunca un dvh fijo en una y un vw
+   * fijo en la otra) para que el marco siempre respete la proporcion exacta
+   * sin importar la del dispositivo - con height:100dvh fijo, un telefono
+   * mas angosto que 9:16 (la mayoria) terminaria estirando el contenido en
+   * vez de recortar con barras.
+   */
+  --app-aspect-ratio: 1080 / 1920;
+  --app-max-width: min(100vw, 100dvh * (1080 / 1920));
+  --app-max-height: min(100dvh, 100vw * (1920 / 1080));
+}
