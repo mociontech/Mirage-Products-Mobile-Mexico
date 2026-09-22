@@ -17,8 +17,8 @@ function writeOutbox(entries: Participation[]): void {
   localStorage.setItem(OUTBOX_KEY, JSON.stringify(entries));
 }
 
-function removeFromOutbox(id: string): void {
-  writeOutbox(readOutbox().filter((entry) => entry.id !== id));
+function removeFromOutbox(idempotencyKey: string): void {
+  writeOutbox(readOutbox().filter((entry) => entry.idempotencyKey !== idempotencyKey));
 }
 
 /**
@@ -28,7 +28,7 @@ function removeFromOutbox(id: string): void {
  */
 export function enqueueParticipation(participation: Participation): void {
   const outbox = readOutbox();
-  if (!outbox.some((entry) => entry.id === participation.id)) {
+  if (!outbox.some((entry) => entry.idempotencyKey === participation.idempotencyKey)) {
     writeOutbox([...outbox, participation]);
   }
   void flushOutbox();
@@ -65,7 +65,7 @@ export async function flushOutbox(): Promise<void> {
   try {
     for (const participation of readOutbox()) {
       const sent = await sendWithRetries(participation);
-      if (sent) removeFromOutbox(participation.id);
+      if (sent) removeFromOutbox(participation.idempotencyKey);
     }
   } finally {
     isFlushing = false;

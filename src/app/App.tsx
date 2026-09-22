@@ -8,6 +8,8 @@ import { RegisterId } from "../screens/RegisterId";
 import { IdGenerated } from "../screens/IdGenerated";
 import { Catalog } from "../screens/Catalog";
 import { Detail } from "../screens/Detail";
+import { ThankYou } from "../screens/ThankYou";
+import { Ranking } from "../screens/Ranking";
 import styles from "./App.module.css";
 
 /**
@@ -50,6 +52,10 @@ function CurrentScreen() {
       return <Catalog />;
     case "detail":
       return <Detail />;
+    case "thankYou":
+      return <ThankYou />;
+    case "ranking":
+      return <Ranking />;
   }
 }
 

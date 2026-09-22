@@ -71,3 +71,13 @@
   object-fit: contain;
   margin-top: var(--space-1);
 }
+
+.finishRow {
+  flex: none;
+  width: 100%;
+  padding: var(--space-3) var(--space-5) var(--space-2);
+}
+
+.finishButton {
+  width: 100%;
+}

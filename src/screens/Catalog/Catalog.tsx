@@ -1,16 +1,21 @@
 import { useFlow } from "../../app/FlowMachine";
+import { PARTICIPATION_POINTS } from "../../config/env";
 import { BrandFrame } from "../../components/BrandFrame";
+import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
 import { products } from "../../content/products";
+import { generateIdempotencyKey } from "../../services/idService";
+import { enqueueParticipation } from "../../services/outbox";
+import type { Participation } from "../../types/participation";
 import styles from "./Catalog.module.css";
 
 /**
  * Grid de los 12 productos - toque en cualquiera abre Detail con su banner
- * completo. No hay frame de Figma para esto (pantalla nueva, no existia en
- * Memory Match ni en la version tablet+pitch), asi que el grid es diseno
- * propio: 2 columnas, con scroll vertical dentro del area de contenido (a
- * diferencia del resto de pantallas, que nunca scrollean - 12 productos
- * legibles no caben enteros en un frame de celular sin scroll).
+ * completo. "Finalizar" dispara PARTICIPATION_RESULT hacia Evius/Supabase
+ * (ver services/api.ts), igual que el boton "Continuar" -> ThankYou de
+ * ProductSelect en la version tablet+pitch: se manda el ultimo producto que
+ * el visitante abrio (o null si solo miro el grid) y el puntaje fijo
+ * PARTICIPATION_POINTS.
  */
 export function Catalog() {
   const { navigate, session, setSession } = useFlow();
@@ -18,6 +23,23 @@ export function Catalog() {
   const openProduct = (productId: string) => {
     setSession({ selectedProductId: productId });
     navigate("detail");
+  };
+
+  const handleFinish = () => {
+    const participation: Participation = {
+      code: session.code,
+      name: session.name,
+      email: session.email,
+      company: session.company,
+      phone: session.phone,
+      area: session.area,
+      productId: session.selectedProductId,
+      points: PARTICIPATION_POINTS,
+      idempotencyKey: generateIdempotencyKey(),
+      ts: Date.now(),
+    };
+    enqueueParticipation(participation);
+    navigate("thankYou");
   };
 
   return (
@@ -40,6 +62,12 @@ export function Catalog() {
             <img src={product.logoImage} alt={product.name} className={styles.cardLogo} />
           </button>
         ))}
+      </div>
+
+      <div className={styles.finishRow}>
+        <Button className={styles.finishButton} onClick={handleFinish}>
+          Finalizar
+        </Button>
       </div>
 
       <Footer />

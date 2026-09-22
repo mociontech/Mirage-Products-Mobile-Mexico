@@ -5,31 +5,45 @@
  * viven como screens normales del mismo state machine en vez de rutas
  * separadas. "Advertencia" (ID ya usado) no es un screen aqui por la misma
  * razon que en Memory Match: es un modal sobre RegisterId, no un destino
- * navegable.
+ * navegable. thankYou/ranking replican el cierre de la version tablet+pitch
+ * (Register -> ... -> ThankYou -> Ranking -> Finalizar), disparado por el
+ * boton "Finalizar" en Catalog en vez de por completar un juego.
  */
-export type Screen = "welcome" | "register" | "registerId" | "idGenerated" | "catalog" | "detail";
+export type Screen =
+  | "welcome"
+  | "register"
+  | "registerId"
+  | "idGenerated"
+  | "catalog"
+  | "detail"
+  | "thankYou"
+  | "ranking";
 
 /**
- * Datos del participante capturados en Register/RegisterId, mas el producto
- * que esta viendo actualmente en Detail (null en catalog). A diferencia de
- * Memory Match no hay score/attempts/matchedProducts - aqui no hay juego,
- * solo exploracion libre del catalogo.
+ * Datos del participante. name/email/company/phone/area quedan null si
+ * entro por "Continua sin registro" (igual que EMPTY_SESSION en la version
+ * tablet) o por "ingresa tu ID" (solo llena code). selectedProductId es el
+ * ultimo producto que vio en Detail - va en el payload de PARTICIPATION_RESULT
+ * como el "producto de interes" de la sesion, igual que productId en
+ * session.ts de la version tablet.
  */
 export interface Session {
-  id: string;
-  name: string;
-  email: string;
-  /** ISO 8601, fijado cuando se confirma el registro (Register o RegisterId). */
-  registeredAt: string;
-  /** Producto que se esta viendo en Detail, o null si no hay ninguno seleccionado. */
+  code: string | null;
+  name: string | null;
+  email: string | null;
+  company: string | null;
+  phone: string | null;
+  area: string | null;
   selectedProductId: string | null;
 }
 
 export const EMPTY_SESSION: Session = {
-  id: "",
-  name: "",
-  email: "",
-  registeredAt: "",
+  code: null,
+  name: null,
+  email: null,
+  company: null,
+  phone: null,
+  area: null,
   selectedProductId: null,
 };
 

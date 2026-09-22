@@ -21,19 +21,19 @@ export function RegisterId() {
   const [checking, setChecking] = useState(false);
   const [showAdvertencia, setShowAdvertencia] = useState(false);
 
-  const id = `${blocks[0]}-${blocks[1]}`;
+  const code = `${blocks[0]}-${blocks[1]}`;
   const canSubmit = blocks[0].length === 3 && blocks[1].length === 3 && !checking;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setChecking(true);
-    const status = await checkIdStatus(id);
+    const status = await checkIdStatus(code);
     setChecking(false);
     if (status === "used") {
       setShowAdvertencia(true);
       return;
     }
-    setSession({ id });
+    setSession({ code });
     navigate("idGenerated");
   };
 

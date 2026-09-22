@@ -84,3 +84,22 @@ export async function checkIdStatus(id: string): Promise<IdStatus> {
 
   return Promise.race([localCheck, timeout]);
 }
+
+/**
+ * crypto.randomUUID solo existe en "secure context" (HTTPS o localhost) - en
+ * pruebas por IP LAN sobre http (no localhost) Safari no lo expone y rompe
+ * el flujo en silencio (mismo problema documentado en session.ts de la
+ * version tablet+pitch). Con crypto disponible se usa esa; si no, cae a un
+ * UUID v4 armado a mano con Math.random (suficiente para una llave de
+ * idempotencia, no para seguridad).
+ */
+export function generateIdempotencyKey(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+    const random = (Math.random() * 16) | 0;
+    const value = char === "x" ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+}

@@ -1,0 +1,58 @@
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+  background:
+    linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
+    var(--color-page-bg);
+  overflow: hidden;
+}
+
+.logo {
+  flex: none;
+  width: 36.2cqh;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 4.6cqh;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.scoreBox {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14cqh;
+  color: var(--color-brand-red);
+  line-height: 1;
+}
+
+.label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 2.6cqh;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.buttonBox {
+  width: 100%;
+  max-width: 35.63cqh;
+  height: 6.93cqh;
+  margin-top: var(--space-3);
+}
+
+.finishButton {
+  height: 100% !important;
+  width: 100%;
+}
