@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFlow } from "../../app/FlowMachine";
 import { EMPTY_SESSION } from "../../app/flow.types";
-import { generateId, hasEmailPlayedLocally } from "../../services/idService";
+import { checkEmailUsedRemotely, generateId, hasEmailPlayedLocally, rememberUsedEmail } from "../../services/idService";
 import { BrandFrame } from "../../components/BrandFrame";
 import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
@@ -32,8 +32,9 @@ export function Register() {
   const [phone, setPhone] = useState("");
   const [area, setArea] = useState(AREAS[0]);
   const [showAdvertencia, setShowAdvertencia] = useState(false);
+  const [checking, setChecking] = useState(false);
 
-  const canSubmit = name.trim().length > 0 && email.trim().length > 0;
+  const canSubmit = name.trim().length > 0 && email.trim().length > 0 && !checking;
 
   const buildFields = () => ({
     name: name.trim(),
@@ -43,13 +44,28 @@ export function Register() {
     area,
   });
 
-  const handleSubmit = () => {
+  /**
+   * hasEmailPlayedLocally solo atrapa un repetido en el MISMO celular;
+   * checkEmailUsedRemotely cierra la brecha de alguien que repite desde
+   * otro dispositivo con el mismo correo - antes eso pasaba de largo hasta
+   * Catalog, donde el envio final se rechazaba en silencio (el unique
+   * constraint de Supabase ya protegia los datos, pero el visitante nunca
+   * se enteraba de que no conto).
+   */
+  const isEmailAlreadyUsed = async (trimmedEmail: string): Promise<boolean> => {
+    if (hasEmailPlayedLocally(trimmedEmail)) return true;
+    setChecking(true);
+    const usedRemotely = await checkEmailUsedRemotely(trimmedEmail);
+    setChecking(false);
+    if (usedRemotely) rememberUsedEmail(trimmedEmail);
+    return usedRemotely;
+  };
+
+  const handleSubmit = async () => {
     if (!canSubmit) return;
     const trimmedEmail = email.trim();
 
-    // El dedupe real (email + country + experience) es del lado del servidor;
-    // esto solo evita que alguien recorra todo el catalogo antes de ser rechazado.
-    if (hasEmailPlayedLocally(trimmedEmail)) {
+    if (await isEmailAlreadyUsed(trimmedEmail)) {
       setShowAdvertencia(true);
       return;
     }
@@ -58,12 +74,16 @@ export function Register() {
     navigate("idGenerated");
   };
 
-  const handleDigitaId = () => {
-    // Nombre/correo (si se llenaron) viajan con la sesion; RegisterId solo agrega el codigo.
-    if (email.trim() && hasEmailPlayedLocally(email.trim())) {
+  const handleDigitaId = async () => {
+    if (!canSubmit) return;
+    const trimmedEmail = email.trim();
+
+    if (trimmedEmail && (await isEmailAlreadyUsed(trimmedEmail))) {
       setShowAdvertencia(true);
       return;
     }
+    // RegisterId only collects the ID itself — name/email must already be in the
+    // session before navigating there, or the final submit goes out with no email.
     setSession(buildFields());
     navigate("registerId");
   };
@@ -134,7 +154,7 @@ export function Register() {
 
       <div className={styles.buttonBox}>
         <Button className={styles.ctaButton} onClick={handleSubmit} disabled={!canSubmit}>
-          Comenzar
+          {checking ? "Verificando..." : "Comenzar"}
         </Button>
       </div>
       <button className={styles.link} onClick={handleDigitaId} disabled={!canSubmit}>

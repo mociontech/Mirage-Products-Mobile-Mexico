@@ -1,3 +1,5 @@
+import { env, RANKING_EXPERIENCE } from "../config/env";
+
 const USED_IDS_CACHE_KEY = "kam:usedIds";
 const USED_EMAILS_CACHE_KEY = "kam:usedEmails";
 const VALIDATION_TIMEOUT_MS = 2500;
@@ -83,6 +85,51 @@ export async function checkIdStatus(id: string): Promise<IdStatus> {
   });
 
   return Promise.race([localCheck, timeout]);
+}
+
+/**
+ * Chequeo real contra Supabase de si este correo ya participo en esta
+ * experiencia+pais - hasEmailPlayedLocally solo detecta un repetido en el
+ * MISMO navegador; alguien que repite desde otro celular (o borro su cache)
+ * pasaba sin aviso, aunque el insert final igual fuera rechazado en
+ * silencio por el unique constraint de Supabase (participant_id, country,
+ * experience). Este chequeo cierra esa brecha de UX -no de datos, esos ya
+ * estaban protegidos- mostrando la advertencia tambien en ese caso.
+ *
+ * Lee la vista ranking_by_experience (SECURITY DEFINER, la unica que la
+ * Publishable key puede leer) en vez de la tabla base. Nunca bloquea el
+ * flujo: sin red o mas lento que VALIDATION_TIMEOUT_MS, se asume
+ * "disponible" y el intento sigue - igual que checkIdStatus - porque un
+ * evento con mal internet no debe impedir participar, la proteccion real
+ * sigue siendo el constraint de la base de datos.
+ */
+export async function checkEmailUsedRemotely(email: string): Promise<boolean> {
+  if (!env.rankingDb.url || !env.rankingDb.apiKey) return false;
+
+  const normalized = normalizeEmail(email);
+  const query = new URLSearchParams({
+    participant_id: `eq.${normalized}`,
+    country: `eq.${env.country}`,
+    experience: `eq.${RANKING_EXPERIENCE}`,
+    select: "participant_id",
+    limit: "1",
+  });
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), VALIDATION_TIMEOUT_MS);
+  try {
+    const response = await fetch(`${env.rankingDb.url}/rest/v1/ranking_by_experience?${query.toString()}`, {
+      headers: { apikey: env.rankingDb.apiKey, Authorization: `Bearer ${env.rankingDb.apiKey}` },
+      signal: controller.signal,
+    });
+    if (!response.ok) return false;
+    const rows = (await response.json()) as unknown[];
+    return Array.isArray(rows) && rows.length > 0;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /**
