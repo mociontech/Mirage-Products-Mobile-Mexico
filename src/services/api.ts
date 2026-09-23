@@ -113,9 +113,14 @@ async function submitExperienceResult(participation: Participation): Promise<voi
  * service_role key y puede usar `resolution=merge-duplicates` como upsert),
  * esta app usa la Publishable key desde el navegador, que solo tiene permiso
  * de INSERT - un upsert con esa key falla con 42501, asi que esto manda un
- * insert simple; un reintento genuino del outbox choca con el constraint
- * unico (409), lo cual esta bien porque hasEmailPlayedLocally ya evita el
- * replay del lado del cliente.
+ * insert simple.
+ *
+ * Un 409 aca es el unique constraint (participant_id, country, experience)
+ * rechazando un duplicado real - nunca es transitorio, reintentarlo jamas
+ * va a funcionar. Antes esto lanzaba igual que cualquier otro fallo, y el
+ * outbox lo reintentaba para siempre (persistido en localStorage, revivido
+ * en cada carga de pagina) sin que nadie se enterara de por que nunca se
+ * iba. Se trata como entrega exitosa: la fila que se queria ya esta ahi.
  */
 async function submitRanking(participation: Participation, email: string | null): Promise<void> {
   if (!env.rankingDb.url || !env.rankingDb.apiKey) return;
@@ -138,6 +143,7 @@ async function submitRanking(participation: Participation, email: string | null)
       submitted_at: new Date(participation.ts).toISOString(),
     }),
   });
+  if (res.status === 409) return;
   if (!res.ok) throw new Error(`Ranking DB submit failed: ${res.status}`);
 }
 
