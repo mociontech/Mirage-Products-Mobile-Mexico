@@ -12,64 +12,110 @@
 .header {
   flex: none;
   width: 100%;
-  padding: var(--space-7) var(--space-5) var(--space-3);
-  text-align: center;
+  padding: var(--space-6) var(--space-5) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
 }
 
-.title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 4.6cqh;
-  color: var(--color-text);
+.logoWrap {
+  width: 50%;
+  max-width: 200px;
 }
 
 .greeting {
-  margin-top: var(--space-1);
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 2.2cqh;
   color: var(--color-brand-red);
 }
 
-.grid {
+.scrollArea {
   flex: 1;
   min-height: 0;
   width: 100%;
   overflow-y: auto;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
-  padding: 0 var(--space-4) var(--space-4);
   -webkit-overflow-scrolling: touch;
+}
+
+.section {
+  padding: var(--space-3) var(--space-4);
+}
+
+.sectionDark {
+  background: var(--color-brand-red);
+  margin-top: var(--space-2);
+}
+
+.sectionTitle {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2cqh;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.sectionTitleDark {
+  color: #fff;
+}
+
+.sectionDivider {
+  width: 32px;
+  height: 2px;
+  margin: var(--space-1) auto var(--space-3);
+  background: var(--color-brand-red);
+}
+
+.sectionDividerDark {
+  background: #fff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
 }
 
 .card {
   position: relative;
-  aspect-ratio: 1 / 1.1;
+  aspect-ratio: 173 / 155;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+  gap: var(--space-1);
   background: var(--color-surface);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-pill);
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.05);
   padding: var(--space-2);
   overflow: hidden;
 }
 
-.cardPhoto {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  object-fit: contain;
+/* Seccion "Alto rendimiento": sin tarjeta blanca, logo+equipo directo sobre el rojo (igual que la referencia). */
+.cardOnDark {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .cardLogo {
-  flex: none;
-  width: 90%;
-  max-height: 3.4cqh;
+  width: 80%;
+  max-height: 42%;
   object-fit: contain;
-  margin-top: var(--space-1);
+  pointer-events: none;
+}
+
+.cardPhoto {
+  width: 85%;
+  max-height: 52%;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .finishRow {
