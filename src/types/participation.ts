@@ -13,7 +13,7 @@ export interface Participation {
   area: string | null;
   /** Ultimo producto que vio en Detail, o null si nunca abrio ninguno. */
   productId: string | null;
-  /** Fijo en PARTICIPATION_POINTS (ver config/env.ts). */
+  /** round(productos distintos vistos / total) * 100 - ver Catalog.tsx#handleFinish. */
   points: number;
   /** Unica por sesion terminada, para que un reintento del outbox nunca duplique el registro. */
   idempotencyKey: string;

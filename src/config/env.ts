@@ -47,11 +47,3 @@ export const env = {
 
 /** Mismo nombre de experiencia usado por el sync-server de la version tablet+pitch en la tabla compartida de ranking. */
 export const RANKING_EXPERIENCE = "catalogo";
-
-/**
- * Puntos por participacion completa (registro + Finalizar en el catalogo).
- * Fijo en 100, igual que PARTICIPATION_POINTS en session.ts de la version
- * tablet+pitch: el catalogo siempre otorga el maximo, el memory match aporta
- * 0-100 segun desempeno, y el ranking combinado promedia ambas experiencias.
- */
-export const PARTICIPATION_POINTS = 100;

@@ -1,10 +1,9 @@
 import { useFlow } from "../../app/FlowMachine";
-import { PARTICIPATION_POINTS } from "../../config/env";
 import { BrandFrame } from "../../components/BrandFrame";
 import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
 import { Logo } from "../../components/Logo";
-import { getProductById } from "../../content/products";
+import { getProductById, products } from "../../content/products";
 import { generateIdempotencyKey, rememberUsedEmail } from "../../services/idService";
 import { enqueueParticipation } from "../../services/outbox";
 import type { Participation } from "../../types/participation";
@@ -46,6 +45,7 @@ export function Catalog() {
   };
 
   const handleFinish = () => {
+    const points = Math.round((session.viewedProductIds.length / products.length) * 100);
     const participation: Participation = {
       code: session.code,
       name: session.name,
@@ -54,7 +54,7 @@ export function Catalog() {
       phone: session.phone,
       area: session.area,
       productId: session.selectedProductId,
-      points: PARTICIPATION_POINTS,
+      points,
       idempotencyKey: generateIdempotencyKey(),
       ts: Date.now(),
     };

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useFlow } from "../../app/FlowMachine";
 import { getProductById } from "../../content/products";
 import styles from "./Detail.module.css";
@@ -10,10 +11,22 @@ import styles from "./Detail.module.css";
  * "volver" es una flecha explicita en vez de que otro dispositivo cambie de
  * estado - es el pedido puntual del cliente al pasar a experiencia de un
  * solo celular.
+ *
+ * Cada producto que se abre aca se agrega a session.viewedProductIds (una
+ * sola vez por producto, sin importar cuantas veces lo reabra) - es lo que
+ * Catalog usa para calcular el puntaje final segun cuanto explorо el
+ * catalogo, en vez de un fijo.
  */
 export function Detail() {
-  const { navigate, session } = useFlow();
+  const { navigate, session, setSession } = useFlow();
   const product = getProductById(session.selectedProductId ?? "");
+
+  useEffect(() => {
+    if (!product) return;
+    if (session.viewedProductIds.includes(product.id)) return;
+    setSession({ viewedProductIds: [...session.viewedProductIds, product.id] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?.id]);
 
   if (!product) {
     navigate("catalog");

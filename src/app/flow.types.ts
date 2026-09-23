@@ -25,7 +25,9 @@ export type Screen =
  * tablet) o por "ingresa tu ID" (solo llena code). selectedProductId es el
  * ultimo producto que vio en Detail - va en el payload de PARTICIPATION_RESULT
  * como el "producto de interes" de la sesion, igual que productId en
- * session.ts de la version tablet.
+ * session.ts de la version tablet. viewedProductIds acumula CADA producto
+ * distinto que abrio en Detail (Detail.tsx lo agrega al montar) - el
+ * puntaje final en Catalog se calcula a partir de este set, no es fijo.
  */
 export interface Session {
   code: string | null;
@@ -35,6 +37,7 @@ export interface Session {
   phone: string | null;
   area: string | null;
   selectedProductId: string | null;
+  viewedProductIds: string[];
 }
 
 export const EMPTY_SESSION: Session = {
@@ -45,6 +48,7 @@ export const EMPTY_SESSION: Session = {
   phone: null,
   area: null,
   selectedProductId: null,
+  viewedProductIds: [],
 };
 
 export interface FlowState {
