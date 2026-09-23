@@ -7,12 +7,20 @@ import { Logo } from "../../components/Logo";
 import { fetchTopRanking, type RankingEntry } from "../../services/ranking";
 import styles from "./Ranking.module.css";
 
+/** Igual que POSITION_POLL_DELAYS_MS en Result.tsx de Memory Match: reintentos espaciados para darle tiempo al outbox de aterrizar la fila antes de asumir que no llego. */
+const REFRESH_DELAYS_MS = [0, 1500, 3500, 6000];
+
 /**
  * Mismo Top 10 que Ranking.tsx en displays/tablet de la version tablet+pitch
  * (node 423:178, "¡TOP 5!") - misma fuente (Supabase, experience "catalogo"),
  * leida directo desde el navegador en vez de a traves del sync-server (ver
- * services/ranking.ts). "Finalizar" resetea la sesion entera, igual que
- * onFinish -> SESSION_END + goHome en TabletApp.tsx.
+ * services/ranking.ts). El insert de este mismo participante (disparado al
+ * tocar "Finalizar" en Catalog) corre en segundo plano y puede no haber
+ * aterrizado todavia cuando esta pantalla monta - un solo fetch inmediato
+ * mostraba la lista vieja para siempre. Reintenta unas cuantas veces con
+ * backoff, no solo una vez, hasta que el usuario toque "Finalizar" y salga.
+ * "Finalizar" resetea la sesion entera, igual que onFinish -> SESSION_END +
+ * goHome en TabletApp.tsx.
  */
 export function Ranking() {
   const { reset } = useFlow();
@@ -20,11 +28,16 @@ export function Ranking() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchTopRanking().then((rows) => {
-      if (!cancelled) setEntries(rows);
-    });
+    const timers = REFRESH_DELAYS_MS.map((delay) =>
+      setTimeout(() => {
+        fetchTopRanking().then((rows) => {
+          if (!cancelled) setEntries(rows);
+        });
+      }, delay),
+    );
     return () => {
       cancelled = true;
+      timers.forEach(clearTimeout);
     };
   }, []);
 
