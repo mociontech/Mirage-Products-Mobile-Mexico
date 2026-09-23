@@ -7,8 +7,15 @@ import { Logo } from "../../components/Logo";
 import { fetchTopRanking, type RankingEntry } from "../../services/ranking";
 import styles from "./Ranking.module.css";
 
-/** Igual que POSITION_POLL_DELAYS_MS en Result.tsx de Memory Match: reintentos espaciados para darle tiempo al outbox de aterrizar la fila antes de asumir que no llego. */
-const REFRESH_DELAYS_MS = [0, 1500, 3500, 6000];
+/**
+ * Cada cuanto reintenta mientras la pantalla siga montada. A diferencia de
+ * una lista fija de delays (que se quedaba corta en redes moviles reales,
+ * mas lentas que las pruebas de escritorio), esto sigue reintentando cada
+ * 3s indefinidamente mientras el visitante este parado en esta pantalla -
+ * son lecturas baratas, y nunca deja de intentar solo porque paso "algo de
+ * tiempo".
+ */
+const POLL_INTERVAL_MS = 3000;
 
 /**
  * Mismo Top 10 que Ranking.tsx en displays/tablet de la version tablet+pitch
@@ -17,10 +24,10 @@ const REFRESH_DELAYS_MS = [0, 1500, 3500, 6000];
  * services/ranking.ts). El insert de este mismo participante (disparado al
  * tocar "Finalizar" en Catalog) corre en segundo plano y puede no haber
  * aterrizado todavia cuando esta pantalla monta - un solo fetch inmediato
- * mostraba la lista vieja para siempre. Reintenta unas cuantas veces con
- * backoff, no solo una vez, hasta que el usuario toque "Finalizar" y salga.
- * "Finalizar" resetea la sesion entera, igual que onFinish -> SESSION_END +
- * goHome en TabletApp.tsx.
+ * mostraba la lista vieja para siempre. Reintenta cada POLL_INTERVAL_MS
+ * mientras el visitante este parado en esta pantalla, hasta que toque
+ * "Finalizar" y salga. "Finalizar" resetea la sesion entera, igual que
+ * onFinish -> SESSION_END + goHome en TabletApp.tsx.
  */
 export function Ranking() {
   const { reset } = useFlow();
@@ -28,16 +35,18 @@ export function Ranking() {
 
   useEffect(() => {
     let cancelled = false;
-    const timers = REFRESH_DELAYS_MS.map((delay) =>
-      setTimeout(() => {
-        fetchTopRanking().then((rows) => {
-          if (!cancelled) setEntries(rows);
-        });
-      }, delay),
-    );
+
+    const poll = () => {
+      fetchTopRanking().then((rows) => {
+        if (!cancelled) setEntries(rows);
+      });
+    };
+
+    poll();
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
     return () => {
       cancelled = true;
-      timers.forEach(clearTimeout);
+      clearInterval(interval);
     };
   }, []);
 
