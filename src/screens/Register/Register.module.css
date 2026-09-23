@@ -4,6 +4,13 @@
  * correo, empresa, celular, area) no vienen de un frame movil - en la
  * version tablet+pitch viven en un frame mas grande con teclado en pantalla
  * que no aplica aqui. Mismos tokens de marca (gradiente, tipografia, colores).
+ *
+ * Distribucion vertical inspirada en Register.tsx de Memory Match (mismo
+ * patron: contenido repartido en cqh a lo largo de todo el alto, footer
+ * pegado abajo via margin-top:auto en vez de todo apilado arriba con hueco
+ * vacio debajo) - alla usa coordenadas absolutas exactas de Figma porque
+ * solo tiene 2 campos; aca son 5+select, asi que se logra el mismo efecto
+ * con margenes/gaps en cqh en vez de posiciones fijas.
  */
 .shell {
   position: relative;
@@ -12,22 +19,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-7) var(--space-5) var(--space-4);
+  padding: 0 var(--space-5);
   background:
     linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
     var(--color-page-bg);
   overflow-y: auto;
-  gap: var(--space-3);
 }
 
 .logo {
   flex: none;
   width: 36.2cqh;
+  margin-top: 8cqh;
 }
 
 .title {
   flex: none;
-  margin: 0;
+  margin: 2.4cqh 0 0;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 5.05cqh;
@@ -42,8 +49,8 @@
   max-width: 45.94cqh;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  margin-top: var(--space-2);
+  gap: 2.2cqh;
+  margin-top: 5cqh;
 }
 
 .fieldBox {
@@ -87,7 +94,7 @@
   width: 100%;
   max-width: 35.63cqh;
   height: 6.93cqh;
-  margin-top: var(--space-3);
+  margin-top: 5cqh;
 }
 
 .ctaButton {
@@ -98,6 +105,7 @@
 
 .link {
   flex: none;
+  margin-top: 2.8cqh;
   background: none;
   border: none;
   padding: 0;
@@ -118,6 +126,7 @@
 
 .skipLink {
   flex: none;
+  margin-top: 1.6cqh;
   background: none;
   border: none;
   padding: 0;
@@ -131,4 +140,14 @@
 .warningIcon {
   width: clamp(48px, 9cqh, 80px);
   height: auto;
+}
+
+/* Empuja el footer al fondo del shell, dejando el resto del contenido agrupado arriba con su propio ritmo de margenes - mismo efecto que justify-content:flex-end en Memory Match. */
+.footerWrap {
+  flex: none;
+  width: 100%;
+  margin-top: auto;
+  padding-bottom: var(--space-4);
+  display: flex;
+  justify-content: center;
 }

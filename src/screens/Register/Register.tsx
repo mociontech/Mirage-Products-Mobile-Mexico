@@ -171,7 +171,9 @@ export function Register() {
         </p>
       </Modal>
 
-      <Footer />
+      <div className={styles.footerWrap}>
+        <Footer />
+      </div>
     </div>
   );
 }
