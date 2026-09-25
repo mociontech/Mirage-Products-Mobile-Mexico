@@ -1,3 +1,10 @@
+/**
+ * Absolute layout matching Figma's "Final" (Result) frame exactly - mismo
+ * template que Memory Match usa para su propia pantalla de puntaje (node
+ * 209:763, 1080x1920). Conversion: cqh = (figma_px / 1920) * 100 — ver el
+ * comentario en Welcome.module.css para por que es exacto en este shell
+ * aspect-locked.
+ */
 .shell {
   position: relative;
   height: 100%;
@@ -5,9 +12,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-4);
-  padding: var(--space-6) var(--space-5);
+  justify-content: flex-end;
+  padding-bottom: var(--space-4);
   background:
     linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
     var(--color-page-bg);
@@ -15,44 +21,76 @@
 }
 
 .logo {
-  flex: none;
+  position: absolute;
+  left: 50%;
+  top: 13.54cqh;
   width: 36.2cqh;
+  height: 5.27cqh;
+  transform: translateX(-50%);
 }
 
 .title {
+  position: absolute;
+  left: 50%;
+  top: 33.44cqh;
+  width: 48cqh;
+  transform: translateX(-50%);
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 4.6cqh;
+  letter-spacing: -0.04em;
+  font-size: 6cqh;
+  line-height: 1.05;
   color: var(--color-text);
   text-align: center;
 }
 
 .scoreBox {
+  position: absolute;
+  left: 50%;
+  top: 51.3cqh;
+  width: 35.73cqh;
+  height: 7.55cqh;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid var(--color-brand-red);
+  border-radius: 0.83cqh;
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 14cqh;
-  color: var(--color-brand-red);
-  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-style: italic;
+  font-size: 6.41cqh;
+  color: var(--color-text);
 }
 
 .label {
+  position: absolute;
+  left: 50%;
+  top: 59.58cqh;
+  width: 47.24cqh;
+  transform: translateX(-50%);
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 2.6cqh;
-  color: var(--color-text-muted);
+  font-weight: 700;
+  font-style: italic;
   text-transform: uppercase;
+  letter-spacing: 0.36cqh;
+  font-size: 5.16cqh;
+  color: var(--color-text);
+  text-align: center;
 }
 
 .buttonBox {
-  width: 100%;
-  max-width: 35.63cqh;
+  position: absolute;
+  left: 50%;
+  top: 74cqh;
+  width: 35.63cqh;
   height: 6.93cqh;
-  margin-top: var(--space-3);
+  transform: translateX(-50%);
 }
 
 .finishButton {
   height: 100% !important;
-  width: 100%;
 }

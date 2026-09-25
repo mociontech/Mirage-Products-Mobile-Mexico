@@ -2,7 +2,7 @@ import { useFlow } from "../../app/FlowMachine";
 import { Button } from "../../components/Button";
 import { BrandFrame } from "../../components/BrandFrame";
 import { Footer } from "../../components/Footer";
-import logoMark from "../../assets/images/logo-mark-red.svg";
+import logoMark from "../../assets/images/logo-mirage.svg";
 import styles from "./Welcome.module.css";
 
 /**

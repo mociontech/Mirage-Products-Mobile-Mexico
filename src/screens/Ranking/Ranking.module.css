@@ -1,3 +1,9 @@
+/**
+ * Absolute layout matching Figma's "¡TOP 5!" frame exactly (same template
+ * Memory Match uses for its own Top 5 - node 423:290, 1080x1920). Conversion:
+ * cqh = (figma_px / 1920) * 100 — see the comment in Welcome.tsx for why
+ * that's exact on this aspect-locked shell.
+ */
 .shell {
   position: relative;
   height: 100%;
@@ -5,77 +11,126 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-6) var(--space-5) var(--space-4);
-  gap: var(--space-3);
-  background: var(--color-page-bg);
+  padding-bottom: var(--space-4);
+  background:
+    linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
+    var(--color-page-bg);
   overflow: hidden;
 }
 
 .logo {
-  flex: none;
-  width: 30cqh;
+  position: absolute;
+  left: 50%;
+  top: 14.32cqh;
+  width: 36.2cqh;
+  height: 5.27cqh;
+  transform: translateX(-50%);
 }
 
 .title {
+  position: absolute;
+  left: 0;
+  top: 28.39cqh;
+  width: 100%;
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 4.6cqh;
-  color: var(--color-brand-red);
-}
-
-.card {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  overflow-y: auto;
-  background: var(--color-surface);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-input-border);
-  padding: var(--space-4);
-}
-
-.empty {
+  font-style: italic;
+  letter-spacing: 0.7cqh;
+  font-size: 10.05cqh;
+  line-height: 1;
+  color: var(--color-text);
   text-align: center;
-  color: var(--color-text-muted);
-  font-family: var(--font-body);
-  font-size: 2.4cqh;
+}
+
+/*
+ * !important: guards against CSS-module import-order flakiness against
+ * NotchedCard.module.css's own `.card` rule (position/width there would
+ * otherwise win or lose depending on which module Vite emits last).
+ */
+.card {
+  position: absolute !important;
+  left: 11.62cqh;
+  top: 39.32cqh;
+  width: 33.07cqh !important;
+  height: 43.91cqh !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .row {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: baseline;
-  font-family: var(--font-body);
-  font-size: 2.6cqh;
-  color: var(--color-text);
-  border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
-  padding-bottom: var(--space-1);
-}
-
-.score {
+  justify-content: center;
+  gap: 0.3em;
   font-family: var(--font-display);
   font-weight: 700;
+  letter-spacing: -0.04em;
+  font-style: italic;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: clamp(20px, 4.01cqh, 40px);
+  padding: var(--space-2) var(--space-2);
+}
+
+/* Solo el nombre se trunca con "..." si no cabe - el puntaje (.score) nunca
+   se corta, siempre queda completo y visible. */
+.name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Score per name, in red - added alongside the name (Figma: "JUAN 110PT"). */
+.score {
+  flex: none;
   color: var(--color-brand-red);
 }
 
+/*
+ * A short centered rule under each name (not last), not a full-width
+ * border-bottom - Figma's divider is only ~13.67cqh wide, well short of the
+ * card's own ~33.07cqh, not edge-to-edge.
+ */
+.row:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 13.67cqh;
+  height: 2px;
+  background: var(--color-brand-red);
+}
+
+.empty {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  font-size: clamp(14px, 2.2cqh, 18px);
+  text-align: center;
+}
+
 .buttonBox {
-  flex: none;
-  width: 100%;
-  max-width: 35.63cqh;
+  position: absolute;
+  left: 50%;
+  top: 87cqh;
+  width: 35.63cqh;
   height: 6.93cqh;
+  transform: translateX(-50%);
 }
 
 .finishButton {
   height: 100% !important;
-  width: 100%;
 }

@@ -1,0 +1,1 @@
+export { NotchedCard } from "./NotchedCard";

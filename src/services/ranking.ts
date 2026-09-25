@@ -7,7 +7,7 @@ export interface RankingEntry {
 }
 
 /**
- * Top 10 de este pais para la experiencia "catalogo", leido directo de la
+ * Top 5 de este pais para la experiencia "catalogo", leido directo de la
  * vista `ranking_by_experience` en Supabase - misma vista que usa Memory
  * Match y el sync-server de la version tablet+pitch (gateway.ts#fetchRanking).
  * Nunca lanza: si no esta configurado o el fetch falla, no hay ranking que
@@ -21,7 +21,7 @@ export async function fetchTopRanking(): Promise<RankingEntry[]> {
       country: `eq.${env.country}`,
       experience: `eq.${RANKING_EXPERIENCE}`,
       order: "position.asc",
-      limit: "10",
+      limit: "5",
     });
     const res = await fetch(`${env.rankingDb.url}/rest/v1/ranking_by_experience?${query.toString()}`, {
       headers: {

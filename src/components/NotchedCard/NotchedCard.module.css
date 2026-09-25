@@ -1,0 +1,25 @@
+.card {
+  position: relative;
+  width: 100%;
+  background: var(--color-surface);
+  border-radius: 32px 4px 32px 4px;
+  padding: var(--space-6) var(--space-4);
+  overflow: hidden;
+}
+
+.tab {
+  position: absolute;
+  height: 6px;
+  width: 25%;
+  background: var(--color-brand-red);
+}
+
+.tabTop {
+  top: 0;
+  right: 0;
+}
+
+.tabBottom {
+  bottom: 0;
+  left: 0;
+}

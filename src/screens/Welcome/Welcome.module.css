@@ -22,10 +22,10 @@
 
 .mark {
   position: absolute;
-  left: 20.17cqh;
-  top: 23.75cqh;
-  width: 15.87cqh;
-  height: 5.79cqh;
+  left: 7.59cqh;
+  top: 21.62cqh;
+  width: 41.13cqh;
+  height: 5.98cqh;
 }
 
 .title {
@@ -39,7 +39,7 @@
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 0.95;
+  line-height: normal;
   text-align: center;
 }
 
@@ -53,6 +53,7 @@
   display: block;
   color: var(--color-text);
   font-size: 6.77cqh;
+  margin-top: -1.5cqh;
 }
 
 .buttonBox {
@@ -75,13 +76,15 @@
 
 .tagline {
   position: absolute;
-  left: 5.05cqh;
-  top: 69.22cqh;
-  width: 46.15cqh;
+  left: 7.3cqh;
+  top: 74.48cqh;
+  width: 42.03cqh;
   font-family: var(--font-display);
   font-weight: 500;
+  letter-spacing: -0.04em;
   line-height: 0.9;
   color: var(--color-brand-red);
-  font-size: 5cqh;
+  font-size: 3.75cqh;
+  white-space: nowrap;
   text-align: center;
 }

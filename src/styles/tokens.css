@@ -20,9 +20,12 @@
   --color-input-bg: rgba(255, 255, 255, 0.15);
   --color-overlay: rgba(0, 0, 0, 0.7);
 
-  /* Tipografia — Poppins para display/botones (decision de marca), Lora para cuerpo */
-  --font-display: "Poppins", system-ui, sans-serif;
-  --font-body: "Lora", Georgia, serif;
+  /* Tipografia — Acumin Pro, la tipografia oficial de marca (self-hosted,
+     ver fonts.css). Un solo tipo de letra para display y cuerpo; el peso lo
+     define font-weight en cada estilo. Poppins/Lora eran solo placeholders
+     mientras no habia tipografia real del cliente. */
+  --font-display: "Acumin Variable Concept", "Acumin Pro", system-ui, sans-serif;
+  --font-body: "Acumin Variable Concept", "Acumin Pro", system-ui, sans-serif;
 
   --radius-pill: 0.83cqh;
 
