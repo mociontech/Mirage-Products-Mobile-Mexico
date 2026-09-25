@@ -20,9 +20,13 @@ export function ScreenShell({ children, actions, showLogo = true, onClick }: Scr
   return (
     <div className={styles.shell} onClick={onClick}>
       <BrandFrame />
-      {showLogo && <div className={styles.logo}><Logo /></div>}
-      <div className={styles.content}>{children}</div>
-      {actions && <div className={styles.actions}>{actions}</div>}
+      {showLogo && (
+        <div className={`${styles.logo} enterFromTop`}>
+          <Logo />
+        </div>
+      )}
+      <div className={`${styles.content} enterFromLeft delay1`}>{children}</div>
+      {actions && <div className={`${styles.actions} enterFromBottom delay2`}>{actions}</div>}
       <Footer />
     </div>
   );

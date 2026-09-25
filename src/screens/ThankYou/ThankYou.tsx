@@ -22,13 +22,15 @@ export function ThankYou() {
   return (
     <div className={styles.shell}>
       <BrandFrame />
-      <div className={styles.logo}>
+      <div className={`${styles.logo} enterFromTop`}>
         <Logo />
       </div>
-      <h1 className={styles.title}>{session.name ? `¡Gracias, ${session.name}!` : "¡Gracias por participar!"}</h1>
-      <div className={styles.scoreBox}>{points}</div>
-      <p className={styles.label}>Acumulaste</p>
-      <div className={styles.buttonBox}>
+      <h1 className={`${styles.title} enterFromLeft delay1`}>
+        {session.name ? `¡Gracias, ${session.name}!` : "¡Gracias por participar!"}
+      </h1>
+      <div className={`${styles.scoreBox} enterScale delay2`}>{points}</div>
+      <p className={`${styles.label} enterFade delay3`}>Acumulaste</p>
+      <div className={`${styles.buttonBox} enterFromBottom delay4`}>
         <Button className={styles.finishButton} onClick={() => navigate("ranking")}>
           Finalizar
         </Button>

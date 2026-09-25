@@ -33,18 +33,18 @@ export function IdGenerated() {
   return (
     <div className={styles.shell}>
       <BrandFrame />
-      <div className={styles.logo}>
+      <div className={`${styles.logo} enterFromTop`}>
         <Logo />
       </div>
-      <h1 className={styles.title}>Tu ID único</h1>
-      <p className={styles.description}>
+      <h1 className={`${styles.title} enterFromLeft delay1`}>Tu ID único</h1>
+      <p className={`${styles.description} enterFade delay2`}>
         <span className={styles.descriptionBold}>Este es tu código personal.</span>
         <span>Guárdalo, lo necesitarás para iniciar.</span>
       </p>
-      <div className={styles.idInputBox}>
+      <div className={`${styles.idInputBox} enterScale delay3`}>
         <IdInput value={blocks} onChange={() => {}} readOnly />
       </div>
-      <div className={styles.buttonBox}>
+      <div className={`${styles.buttonBox} enterFromBottom delay4`}>
         <Button className={styles.ctaButton} onClick={() => navigate("catalog")}>
           Comenzar
         </Button>

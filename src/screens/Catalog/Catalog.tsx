@@ -71,7 +71,7 @@ export function Catalog() {
   return (
     <div className={styles.shell}>
       <BrandFrame />
-      <div className={styles.header}>
+      <div className={`${styles.header} enterFromTop`}>
         <div className={styles.logoWrap}>
           <Logo />
         </div>
@@ -79,10 +79,11 @@ export function Catalog() {
       </div>
 
       <div className={styles.scrollArea}>
-        {SECTIONS.map((section) => (
+        {SECTIONS.map((section, sectionIndex) => (
           <section
             key={section.title}
-            className={`${styles.section} ${section.variant === "dark" ? styles.sectionDark : ""}`}
+            className={`${styles.section} ${section.variant === "dark" ? styles.sectionDark : ""} enterFromLeft`}
+            style={{ animationDelay: `${sectionIndex * 120}ms` }}
           >
             <h2 className={`${styles.sectionTitle} ${section.variant === "dark" ? styles.sectionTitleDark : ""}`}>
               {section.title}
@@ -90,14 +91,15 @@ export function Catalog() {
             <div className={`${styles.sectionDivider} ${section.variant === "dark" ? styles.sectionDividerDark : ""}`} />
 
             <div className={styles.grid}>
-              {section.ids.map((id) => {
+              {section.ids.map((id, cardIndex) => {
                 const product = getProductById(id);
                 if (!product) return null;
                 return (
                   <button
                     key={product.id}
                     type="button"
-                    className={`${styles.card} ${section.variant === "dark" ? styles.cardOnDark : ""}`}
+                    className={`${styles.card} ${section.variant === "dark" ? styles.cardOnDark : ""} enterScale`}
+                    style={{ animationDelay: `${sectionIndex * 120 + cardIndex * 40}ms` }}
                     onClick={() => openProduct(product.id)}
                   >
                     <img src={product.logoImage} alt={product.name} className={styles.cardLogo} />
@@ -110,7 +112,7 @@ export function Catalog() {
         ))}
       </div>
 
-      <div className={styles.finishRow}>
+      <div className={`${styles.finishRow} enterFromBottom`}>
         <Button className={styles.finishButton} onClick={handleFinish}>
           Finalizar
         </Button>

@@ -63,17 +63,21 @@ export function Ranking() {
   return (
     <div className={styles.shell}>
       <BrandFrame />
-      <div className={styles.logo}>
+      <div className={`${styles.logo} enterFromTop`}>
         <Logo />
       </div>
-      <h1 className={styles.title}>¡Top 5!</h1>
-      <NotchedCard className={styles.card}>
+      <h1 className={`${styles.title} enterFromLeft delay1`}>¡Top 5!</h1>
+      <NotchedCard className={`${styles.card} enterFromBottom delay2`}>
         {entries.length === 0 ? (
           <p className={styles.empty}>Aún no hay resultados para mostrar.</p>
         ) : (
           <ol className={styles.list}>
-            {entries.map((entry) => (
-              <li key={entry.position} className={styles.row}>
+            {entries.map((entry, index) => (
+              <li
+                key={entry.position}
+                className={`${styles.row} enterFromRight`}
+                style={{ animationDelay: `${240 + index * 70}ms` }}
+              >
                 <span className={styles.name}>{truncateName(entry.participant_name ?? "Anónimo")}</span>
                 <span className={styles.score}>{Math.round(entry.score)}pt</span>
               </li>
@@ -81,7 +85,7 @@ export function Ranking() {
           </ol>
         )}
       </NotchedCard>
-      <div className={styles.buttonBox}>
+      <div className={`${styles.buttonBox} enterFromBottom delay3`}>
         <Button className={styles.finishButton} onClick={reset}>
           Finalizar
         </Button>

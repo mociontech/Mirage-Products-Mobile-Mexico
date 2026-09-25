@@ -20,17 +20,17 @@ export function Welcome() {
   return (
     <div className={styles.shell}>
       <BrandFrame />
-      <img className={styles.mark} src={logoMark} alt="Mirage" />
-      <h1 className={styles.title}>
+      <img className={`${styles.mark} enterFromTop`} src={logoMark} alt="Mirage" />
+      <h1 className={`${styles.title} enterFromLeft delay1`}>
         <span className={styles.titleTop}>NUESTROS</span>
         <span className={styles.titleBottom}>PRODUCTOS</span>
       </h1>
-      <div className={styles.buttonBox}>
+      <div className={`${styles.buttonBox} enterFromBottom delay2`}>
         <Button className={styles.ctaButton} onClick={() => navigate("register")}>
           Iniciar
         </Button>
       </div>
-      <p className={styles.tagline}>
+      <p className={`${styles.tagline} enterFade delay3`}>
         Acondicionamos tu vida<sup>®</sup>
       </p>
       <Footer />

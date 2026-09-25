@@ -15,8 +15,8 @@ interface ModalProps {
 export function Modal({ open, onClose, children }: ModalProps) {
   if (!open) return null;
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.content}>{children}</div>
+    <div className={`${styles.overlay} enterFade`} onClick={onClose}>
+      <div className={`${styles.content} enterScale delay1`}>{children}</div>
     </div>
   );
 }

@@ -10,11 +10,24 @@
   font-size: clamp(16px, 3cqh, 28px);
   border-radius: var(--radius-pill);
   padding: clamp(12px, 2.4cqh, 24px) var(--space-6);
-  transition: transform 120ms ease, opacity 120ms ease;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    background-color 250ms ease;
+}
+
+/* Hover solo importa en preview de escritorio (touch no dispara :hover),
+   pero el degradado progresivo hacia el rojo oscuro le da vida a la app en
+   cualquier contexto donde si aplique. */
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background: var(--color-brand-red-dark);
+  }
 }
 
 .button:active {
   transform: scale(0.97);
+  background: var(--color-brand-red-dark);
 }
 
 .button:disabled {
