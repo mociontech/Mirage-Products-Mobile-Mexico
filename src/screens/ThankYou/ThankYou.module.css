@@ -65,6 +65,12 @@
   color: var(--color-text);
 }
 
+.scoreValue {
+  display: block;
+  line-height: 1;
+  transform: translateY(0.28cqh);
+}
+
 .label {
   position: absolute;
   left: 50%;
@@ -73,12 +79,16 @@
   transform: translateX(-50%);
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   font-style: italic;
   text-transform: uppercase;
   letter-spacing: 0.36cqh;
-  font-size: 5.16cqh;
-  color: var(--color-text);
+  font-stretch: 50%;
+  font-size: 5.68cqh;
+  line-height: 6.88cqh;
+  color: #000;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #fff;
   text-align: center;
 }
 

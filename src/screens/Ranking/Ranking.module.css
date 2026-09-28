@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   padding-bottom: var(--space-4);
   background:
     linear-gradient(126.96deg, rgba(255, 255, 255, 0.5) 24.12%, rgba(53, 68, 77, 0.5) 129.36%),
@@ -125,7 +126,7 @@
 .buttonBox {
   position: absolute;
   left: 50%;
-  top: 87cqh;
+  top: 84.5cqh;
   width: 35.63cqh;
   height: 6.93cqh;
   transform: translateX(-50%);
@@ -133,4 +134,11 @@
 
 .finishButton {
   height: 100% !important;
+}
+
+/* El boton "Finalizar" queda mas cerca del footer que en otras pantallas -
+   se reduce el gap del footer (via su --footer-gap) solo aqui para que la
+   URL no quede tapada por el boton. */
+.footerWrap {
+  --footer-gap: 1cqh;
 }

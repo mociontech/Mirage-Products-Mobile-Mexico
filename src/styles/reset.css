@@ -66,3 +66,15 @@ ul,
 ol {
   list-style: none;
 }
+
+/*
+ * El navegador por defecto usa vertical-align:super, que en Figma se ve
+ * mucho mas alto que el ® real (el archivo lo trae vectorizado, sin
+ * metadata de texto que copiar) - text-top + un tamano mas chico lo deja a
+ * la altura de la mayuscula en vez de flotando arriba de la linea. Unico
+ * uso real de <sup> en la app: el ® de "Acondicionamos tu vida®".
+ */
+sup {
+  font-size: 0.68em;
+  vertical-align: text-top;
+}

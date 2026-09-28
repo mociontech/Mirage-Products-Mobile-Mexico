@@ -10,6 +10,7 @@ import { Catalog } from "../screens/Catalog";
 import { Detail } from "../screens/Detail";
 import { ThankYou } from "../screens/ThankYou";
 import { Ranking } from "../screens/Ranking";
+import { SecretResetZone } from "../components/SecretResetZone";
 import styles from "./App.module.css";
 
 /**
@@ -68,6 +69,7 @@ function AppShell() {
   return (
     <div className={styles.shell}>
       <CurrentScreen />
+      <SecretResetZone onTrigger={reset} />
     </div>
   );
 }

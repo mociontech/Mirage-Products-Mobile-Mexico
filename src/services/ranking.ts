@@ -13,6 +13,31 @@ export interface RankingEntry {
  * Nunca lanza: si no esta configurado o el fetch falla, no hay ranking que
  * mostrar y la pantalla lo trata como lista vacia, no como error.
  */
+/**
+ * Cache en memoria del ultimo Top 5 pedido - permite que Ranking.tsx pinte
+ * la lista de inmediato al montar (sin esperar el round-trip) si alguien ya
+ * disparo prefetchTopRanking() antes, en vez de arrancar siempre en []
+ * mientras carga. Ranking.tsx sigue con su propio poll cada 3s como antes -
+ * esto solo evita el parpadeo inicial, no lo reemplaza.
+ */
+let cachedTopRanking: RankingEntry[] | null = null;
+
+/** Lee el cache sin disparar ningun fetch - null si nunca se prefeteo. */
+export function getCachedTopRanking(): RankingEntry[] | null {
+  return cachedTopRanking;
+}
+
+/**
+ * Dispara el fetch del ranking por adelantado (apenas se conoce el puntaje
+ * final, antes de llegar a la pantalla Ranking) para que el round-trip a
+ * Supabase ya este en curso o resuelto cuando el visitante llegue ahi.
+ */
+export function prefetchTopRanking(): void {
+  fetchTopRanking().then((rows) => {
+    cachedTopRanking = rows;
+  });
+}
+
 export async function fetchTopRanking(): Promise<RankingEntry[]> {
   if (!env.rankingDb.url || !env.rankingDb.apiKey) return [];
 

@@ -87,6 +87,101 @@ export async function checkIdStatus(id: string): Promise<IdStatus> {
   return Promise.race([localCheck, timeout]);
 }
 
+export interface RegistrationFields {
+  name: string | null;
+  email: string | null;
+  company?: string | null;
+  phone?: string | null;
+  area?: string | null;
+}
+
+/**
+ * Guarda el registro (nombre/correo/empresa/celular/area) asociado a un
+ * codigo apenas se genera, para que la pantalla "ingresa tu ID" lo pueda
+ * recuperar despues desde cualquier dispositivo - antes el codigo no
+ * quedaba en ningun lado consultable, asi que esa pantalla nunca podia
+ * saber de quien era. Best-effort y silencioso: nunca bloquea el registro
+ * ni lanza. Si falla (sin red), el peor caso es que ese codigo puntual no
+ * se pueda recuperar mas tarde - el registro local (sessionStorage) sigue
+ * funcionando igual.
+ */
+export async function submitRegistration(code: string, fields: RegistrationFields): Promise<void> {
+  if (!env.rankingDb.url || !env.rankingDb.apiKey) return;
+  try {
+    await fetch(`${env.rankingDb.url}/rest/v1/registrations`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: env.rankingDb.apiKey,
+        Authorization: `Bearer ${env.rankingDb.apiKey}`,
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        code,
+        country: env.country,
+        experience: RANKING_EXPERIENCE,
+        name: fields.name,
+        email: fields.email,
+        company: fields.company ?? null,
+        phone: fields.phone ?? null,
+        area: fields.area ?? null,
+      }),
+    });
+  } catch {
+    // Sin red: el codigo no queda recuperable remotamente por ahora.
+  }
+}
+
+export type RegistrationLookup =
+  | { status: "found"; record: RegistrationFields }
+  | { status: "not_found" }
+  | { status: "error" };
+
+/**
+ * Busca un codigo ya registrado via la funcion RPC get_registration_by_code
+ * (SECURITY DEFINER - la unica forma en que la Publishable key puede leer
+ * esta tabla, ver docs/supabase-schema.sql seccion 6). "error" (sin red o
+ * mas lento que VALIDATION_TIMEOUT_MS) se distingue de "not_found": ahi no
+ * sabemos si el codigo existe, asi que la pantalla no debe tratarlo como
+ * invalido, solo pedir que se reintente.
+ */
+export async function lookupRegistrationByCode(code: string): Promise<RegistrationLookup> {
+  if (!env.rankingDb.url || !env.rankingDb.apiKey) return { status: "error" };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), VALIDATION_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${env.rankingDb.url}/rest/v1/rpc/get_registration_by_code`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: env.rankingDb.apiKey,
+        Authorization: `Bearer ${env.rankingDb.apiKey}`,
+      },
+      body: JSON.stringify({ p_code: code, p_country: env.country, p_experience: RANKING_EXPERIENCE }),
+      signal: controller.signal,
+    });
+    if (!res.ok) return { status: "error" };
+    const rows = (await res.json()) as Array<{
+      name: string | null;
+      email: string | null;
+      company: string | null;
+      phone: string | null;
+      area: string | null;
+    }>;
+    const row = rows[0];
+    if (!row) return { status: "not_found" };
+    return {
+      status: "found",
+      record: { name: row.name, email: row.email, company: row.company, phone: row.phone, area: row.area },
+    };
+  } catch {
+    return { status: "error" };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * Chequeo real contra Supabase de si este correo ya participo en esta
  * experiencia+pais - hasEmailPlayedLocally solo detecta un repetido en el

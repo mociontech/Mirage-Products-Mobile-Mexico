@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { useFlow } from "../../app/FlowMachine";
 import { EMPTY_SESSION } from "../../app/flow.types";
-import { checkEmailUsedRemotely, generateId, hasEmailPlayedLocally, rememberUsedEmail } from "../../services/idService";
+import {
+  checkEmailUsedRemotely,
+  generateId,
+  hasEmailPlayedLocally,
+  rememberUsedEmail,
+  submitRegistration,
+} from "../../services/idService";
 import { BrandFrame } from "../../components/BrandFrame";
 import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
 import { Logo } from "../../components/Logo";
-import { TextField } from "../../components/TextField";
 import { Modal } from "../../components/Modal";
 import modalStyles from "../../components/Modal/Modal.module.css";
-import iconPerson from "../../assets/images/icon-person.svg";
-import iconEnvelope from "../../assets/images/icon-envelope.svg";
 import iconWarning from "../../assets/images/icon-warning.svg";
 import styles from "./Register.module.css";
 
@@ -70,21 +73,20 @@ export function Register() {
       return;
     }
 
-    setSession({ ...buildFields(), code: generateId() });
+    const code = generateId();
+    setSession({ ...buildFields(), code });
+    // Guarda el registro asociado a este codigo para que "ingresa tu ID" lo
+    // pueda recuperar despues - no se espera (nunca bloquea la navegacion).
+    void submitRegistration(code, buildFields());
     navigate("idGenerated");
   };
 
-  const handleDigitaId = async () => {
-    if (!canSubmit) return;
-    const trimmedEmail = email.trim();
-
-    if (trimmedEmail && (await isEmailAlreadyUsed(trimmedEmail))) {
-      setShowAdvertencia(true);
-      return;
-    }
-    // RegisterId only collects the ID itself — name/email must already be in the
-    // session before navigating there, or the final submit goes out with no email.
-    setSession(buildFields());
+  /**
+   * Reingreso rapido: no exige llenar el formulario (a diferencia de antes)
+   * porque quien ya tiene un codigo no deberia tener que volver a hacerlo -
+   * eso es justamente lo que RegisterId recupera al buscar el codigo.
+   */
+  const handleDigitaId = () => {
     navigate("registerId");
   };
 
@@ -105,18 +107,16 @@ export function Register() {
 
       <div className={`${styles.fields} enterFade delay2`}>
         <div className={styles.fieldBox}>
-          <TextField
-            icon={<img src={iconPerson} alt="" />}
-            iconClassName={styles.nameIcon}
+          <input
+            className={styles.plainInput}
             placeholder="Nombre"
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
         </div>
         <div className={styles.fieldBox}>
-          <TextField
-            icon={<img src={iconEnvelope} alt="" />}
-            iconClassName={styles.emailIcon}
+          <input
+            className={styles.plainInput}
             placeholder="Correo"
             type="email"
             inputMode="email"
@@ -157,11 +157,7 @@ export function Register() {
           {checking ? "Verificando..." : "Comenzar"}
         </Button>
       </div>
-      <button
-        className={`${styles.link} enterFade delay4`}
-        onClick={handleDigitaId}
-        disabled={!canSubmit}
-      >
+      <button className={`${styles.link} enterFade delay4`} onClick={handleDigitaId}>
         ó ingresa tu ID
       </button>
       <button type="button" className={`${styles.skipLink} enterFade delay5`} onClick={handleSkip}>

@@ -74,6 +74,12 @@
   font-size: 3.39cqh !important;
 }
 
+.ctaLabel {
+  display: block;
+  line-height: 1;
+  transform: translateY(0.18cqh);
+}
+
 .tagline {
   position: absolute;
   left: 7.3cqh;

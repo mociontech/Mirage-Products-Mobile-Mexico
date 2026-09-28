@@ -4,19 +4,12 @@ import { BrandFrame } from "../../components/BrandFrame";
 import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
 import { Logo } from "../../components/Logo";
+import { MarqueeText } from "../../components/MarqueeText";
 import { NotchedCard } from "../../components/NotchedCard";
-import { fetchTopRanking, type RankingEntry } from "../../services/ranking";
+import { fetchTopRanking, getCachedTopRanking, type RankingEntry } from "../../services/ranking";
 import styles from "./Ranking.module.css";
 
 const TOP_N = 5;
-/** Max chars shown for a name before truncating with "…" - keeps every row's
- * proportions/spacing intact regardless of how long a name is, instead of
- * relying only on CSS ellipsis (which depends on the rendered pixel width). */
-const NAME_MAX_CHARS = 6;
-
-function truncateName(name: string): string {
-  return name.length > NAME_MAX_CHARS ? `${name.slice(0, NAME_MAX_CHARS)}…` : name;
-}
 
 /**
  * Cada cuanto reintenta mientras la pantalla siga montada. A diferencia de
@@ -41,7 +34,10 @@ const POLL_INTERVAL_MS = 3000;
  */
 export function Ranking() {
   const { reset } = useFlow();
-  const [entries, setEntries] = useState<RankingEntry[]>([]);
+  // Arranca con lo que Catalog.tsx ya haya prefeteado (prefetchTopRanking)
+  // al tocar "Finalizar" - evita el parpadeo de "Aun no hay resultados"
+  // mientras corre el primer poll.
+  const [entries, setEntries] = useState<RankingEntry[]>(() => getCachedTopRanking() ?? []);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,7 +74,9 @@ export function Ranking() {
                 className={`${styles.row} enterFromRight`}
                 style={{ animationDelay: `${240 + index * 70}ms` }}
               >
-                <span className={styles.name}>{truncateName(entry.participant_name ?? "Anónimo")}</span>
+                <span className={styles.name}>
+                  <MarqueeText text={entry.participant_name ?? "Anónimo"} />
+                </span>
                 <span className={styles.score}>{Math.round(entry.score)}pt</span>
               </li>
             ))}
@@ -90,7 +88,9 @@ export function Ranking() {
           Finalizar
         </Button>
       </div>
-      <Footer />
+      <div className={styles.footerWrap}>
+        <Footer />
+      </div>
     </div>
   );
 }

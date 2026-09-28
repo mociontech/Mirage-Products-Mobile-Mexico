@@ -6,7 +6,7 @@
   gap: var(--space-1);
   margin: 0;
   /* ~80px up in Figma's 1920-tall frame (80/1920*100), on top of the usual gap. */
-  margin-bottom: 4.17cqh;
+  margin-bottom: var(--footer-gap, 4.17cqh);
   padding-top: var(--space-2);
   font-family: var(--font-body);
   font-size: clamp(16px, 3.2cqh, 23px);

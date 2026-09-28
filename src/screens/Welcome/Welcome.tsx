@@ -27,7 +27,7 @@ export function Welcome() {
       </h1>
       <div className={`${styles.buttonBox} enterFromBottom delay2`}>
         <Button className={styles.ctaButton} onClick={() => navigate("register")}>
-          Iniciar
+          <span className={styles.ctaLabel}>Iniciar</span>
         </Button>
       </div>
       <p className={`${styles.tagline} enterFade delay3`}>
