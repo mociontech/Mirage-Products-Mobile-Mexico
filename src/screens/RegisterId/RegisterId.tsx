@@ -62,6 +62,7 @@ export function RegisterId() {
 
   return (
     <ScreenShell
+      onBack={() => navigate("register")}
       actions={
         <Button onClick={handleSubmit} disabled={!canSubmit}>
           {checking ? "Verificando..." : "Comenzar"}

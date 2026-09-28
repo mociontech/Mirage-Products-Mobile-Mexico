@@ -18,6 +18,32 @@
   overflow: hidden;
 }
 
+/* Sutil a proposito: gris tenue, sin fondo ni borde - no debe competir con
+   el logo ni con el titulo, solo estar ahi para quien la busque. */
+.backButton {
+  position: absolute;
+  top: var(--space-5);
+  left: var(--space-3);
+  width: 4.5cqh;
+  height: 4.5cqh;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.backButton svg {
+  width: 60%;
+  height: 60%;
+}
+
 .logo {
   flex: none;
   width: 60%;
