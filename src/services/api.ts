@@ -124,7 +124,13 @@ async function submitExperienceResult(participation: Participation): Promise<voi
  */
 async function submitRanking(participation: Participation, email: string | null): Promise<void> {
   if (!env.rankingDb.url || !env.rankingDb.apiKey) return;
-  if (!email) return;
+
+  // "Continua sin registro": antes esto se descartaba en silencio (nunca se
+  // mandaba), asi que no habia forma de saber cuanta gente jugo sin
+  // registrarse. Ahora se guarda igual, con un id sintetico (nunca colisiona
+  // con el unique constraint) y is_anonymous=true - las vistas de ranking
+  // excluyen estas filas, asi que nunca compiten por el premio.
+  const isAnonymous = !email;
 
   const res = await fetch(`${env.rankingDb.url}/rest/v1/${env.rankingDb.table}`, {
     method: "POST",
@@ -135,12 +141,13 @@ async function submitRanking(participation: Participation, email: string | null)
       Prefer: "return=minimal",
     },
     body: JSON.stringify({
-      participant_id: email,
+      participant_id: email ?? `anon:${crypto.randomUUID()}`,
       participant_name: participation.name?.trim() || null,
       country: env.country,
       experience: RANKING_EXPERIENCE,
       score: participation.points,
       submitted_at: new Date(participation.ts).toISOString(),
+      is_anonymous: isAnonymous,
     }),
   });
   if (res.status === 409) return;
