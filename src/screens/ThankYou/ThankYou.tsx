@@ -21,6 +21,16 @@ function shortGreetingName(name: string): string {
 }
 
 /**
+ * El envio de ESTA participacion (enqueueParticipation, disparado en
+ * Catalog.handleFinish justo antes de navegar aca) viaja a Supabase via el
+ * outbox de forma asincrona - un solo fetch al montar casi siempre corre
+ * antes de que el insert exista, y la persona nunca veria si quedo en el
+ * ranking general. Se reintenta mientras la pantalla siga montada, mismo
+ * patron que el poll del Top 5 en Ranking.tsx.
+ */
+const POSITION_POLL_INTERVAL_MS = 1500;
+
+/**
  * Mismo contenido que ThankYou.tsx en displays/tablet de la version
  * tablet+pitch (node 224:3181, "04_Agradecimiento") - el puntaje mostrado es
  * el mismo que ya se mando a Catalog.handleFinish: cuantos productos
@@ -41,11 +51,18 @@ export function ThankYou() {
   useEffect(() => {
     if (!session.email) return;
     let cancelled = false;
-    fetchMyCombinedPosition(session.email).then((record) => {
-      if (!cancelled && record) setCombinedPosition(record.position);
-    });
+
+    const poll = () => {
+      fetchMyCombinedPosition(session.email!).then((record) => {
+        if (!cancelled && record) setCombinedPosition(record.position);
+      });
+    };
+
+    poll();
+    const interval = setInterval(poll, POSITION_POLL_INTERVAL_MS);
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, [session.email]);
 
