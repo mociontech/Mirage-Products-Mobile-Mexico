@@ -3,6 +3,15 @@ import type { Participation } from "../types/participation";
 
 const OUTBOX_KEY = "mpm:outbox";
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000] as const; // 4 delays -> 5 total attempts
+/**
+ * Reintento periodico, independiente del evento `online` del navegador - ese
+ * evento no es confiable en un kiosko (el wifi del venue puede reportarse
+ * "conectado" sin internet real, o sin ruta a Supabase, y el navegador nunca
+ * dispara `online` en ese caso porque nunca vio un `offline` real primero).
+ * Bug real detectado en vivo en Mexico: participaciones se quedaron sin
+ * subir porque nunca llego el evento `online` para disparar el reintento.
+ */
+const POLL_INTERVAL_MS = 20_000;
 
 function readOutbox(): Participation[] {
   try {
@@ -72,10 +81,27 @@ export async function flushOutbox(): Promise<void> {
   }
 }
 
-/** Conecta el outbox para reintentar solo al recuperar conectividad. Llamar una vez al arrancar. */
+/**
+ * Conecta el outbox para reintentar al recuperar conectividad. Llamar una
+ * vez al arrancar.
+ *
+ * Dos disparadores, no uno solo: el evento `online` (rapido cuando si
+ * dispara) MAS un poll cada POLL_INTERVAL_MS mientras queden entradas
+ * pendientes - el poll es la red de seguridad real, porque `online` puede
+ * simplemente no disparar en el wifi del venue (ver el comentario en
+ * POLL_INTERVAL_MS). El poll no hace nada si el outbox esta vacio.
+ */
 export function initOutboxFlush(): () => void {
   const handleOnline = () => void flushOutbox();
   window.addEventListener("online", handleOnline);
   void flushOutbox();
-  return () => window.removeEventListener("online", handleOnline);
+
+  const interval = setInterval(() => {
+    if (readOutbox().length > 0) void flushOutbox();
+  }, POLL_INTERVAL_MS);
+
+  return () => {
+    window.removeEventListener("online", handleOnline);
+    clearInterval(interval);
+  };
 }
