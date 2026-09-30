@@ -71,12 +71,24 @@
   transform: translateY(0.28cqh);
 }
 
-.label {
+/*
+ * .positionStack envuelve la etiqueta + la linea del ranking general (ver
+ * ThankYou.tsx) - antes ambas usaban .label con el MISMO top absoluto y se
+ * pintaban una encima de la otra en vez de una debajo de la otra (bug real
+ * visto en el evento). El stack se ancla donde .label vivia sola.
+ */
+.positionStack {
   position: absolute;
   left: 50%;
   top: 59.58cqh;
   width: 47.24cqh;
   transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqh;
+}
+
+.label {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
@@ -85,7 +97,7 @@
   letter-spacing: 0.36cqh;
   font-stretch: 50%;
   font-size: 5.68cqh;
-  line-height: 6.88cqh;
+  line-height: 6.2cqh;
   color: #000;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #fff;

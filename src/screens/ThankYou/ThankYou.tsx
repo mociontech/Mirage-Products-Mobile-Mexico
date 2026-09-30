@@ -78,10 +78,12 @@ export function ThankYou() {
       <div className={`${styles.scoreBox} enterScale delay2`}>
         <span className={styles.scoreValue}>{points}</span>
       </div>
-      <p className={`${styles.label} enterFade delay3`}>Acumulaste en esta experiencia</p>
-      {combinedPosition !== null && (
-        <p className={`${styles.label} enterFade delay3`}>Vas en el puesto #{combinedPosition} del ranking general</p>
-      )}
+      <div className={styles.positionStack}>
+        <p className={`${styles.label} enterFade delay3`}>Acumulaste en esta experiencia</p>
+        {combinedPosition !== null && (
+          <p className={`${styles.label} enterFade delay3`}>Vas en el puesto #{combinedPosition} del ranking general</p>
+        )}
+      </div>
       <div className={`${styles.buttonBox} enterFromBottom delay4`}>
         <Button className={styles.finishButton} onClick={() => navigate("ranking")}>
           Finalizar
