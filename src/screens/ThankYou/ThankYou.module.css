@@ -94,10 +94,14 @@
   font-weight: 800;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.36cqh;
+  letter-spacing: 0.3cqh;
   font-stretch: 50%;
-  font-size: 5.68cqh;
-  line-height: 6.2cqh;
+  /* Achicado (no es el tamaño original de Figma): "ACUMULASTE EN ESTA
+     EXPERIENCIA" envuelve a 2 lineas a este ancho, y el tamaño original
+     empujaba el stack completo hasta chocar con el boton "Finalizar" de
+     abajo (mismo bug ya visto y arreglado en Memory Match). */
+  font-size: 4.3cqh;
+  line-height: 5.2cqh;
   color: #000;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #fff;
