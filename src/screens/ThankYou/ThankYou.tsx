@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import { useFlow } from "../../app/FlowMachine";
 import { BrandFrame } from "../../components/BrandFrame";
 import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
 import { Logo } from "../../components/Logo";
 import { products } from "../../content/products";
+import { fetchMyCombinedPosition } from "../../services/ranking";
 import styles from "./ThankYou.module.css";
 
 /**
@@ -30,6 +32,22 @@ function shortGreetingName(name: string): string {
 export function ThankYou() {
   const { navigate, session } = useFlow();
   const points = Math.round((session.viewedProductIds.length / products.length) * 100);
+  const [combinedPosition, setCombinedPosition] = useState<number | null>(null);
+
+  // El puntaje de arriba es SOLO de esta experiencia - se aclara para no
+  // repetir el malentendido de Mexico, donde un puntaje alto aca se confundio
+  // con haber ganado el premio (lo decide el ranking general, ver
+  // ranking_combined en docs/supabase-schema.sql).
+  useEffect(() => {
+    if (!session.email) return;
+    let cancelled = false;
+    fetchMyCombinedPosition(session.email).then((record) => {
+      if (!cancelled && record) setCombinedPosition(record.position);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [session.email]);
 
   return (
     <div className={styles.shell}>
@@ -43,7 +61,10 @@ export function ThankYou() {
       <div className={`${styles.scoreBox} enterScale delay2`}>
         <span className={styles.scoreValue}>{points}</span>
       </div>
-      <p className={`${styles.label} enterFade delay3`}>Acumulaste</p>
+      <p className={`${styles.label} enterFade delay3`}>Acumulaste en esta experiencia</p>
+      {combinedPosition !== null && (
+        <p className={`${styles.label} enterFade delay3`}>Vas en el puesto #{combinedPosition} del ranking general</p>
+      )}
       <div className={`${styles.buttonBox} enterFromBottom delay4`}>
         <Button className={styles.finishButton} onClick={() => navigate("ranking")}>
           Finalizar

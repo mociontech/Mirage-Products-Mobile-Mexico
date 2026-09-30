@@ -95,41 +95,51 @@ export interface RegistrationFields {
   area?: string | null;
 }
 
+const REGISTER_RETRY_DELAYS_MS = [0, 800, 2000];
+
 /**
  * Guarda el registro (nombre/correo/empresa/celular/area) asociado a un
  * codigo apenas se genera, para que la pantalla "ingresa tu ID" lo pueda
  * recuperar despues desde cualquier dispositivo - antes el codigo no
  * quedaba en ningun lado consultable, asi que esa pantalla nunca podia
- * saber de quien era. Best-effort y silencioso: nunca bloquea el registro
- * ni lanza. Si falla (sin red), el peor caso es que ese codigo puntual no
- * se pueda recuperar mas tarde - el registro local (sessionStorage) sigue
- * funcionando igual.
+ * saber de quien era.
+ *
+ * Antes tampoco revisaba `res.ok`: un 4xx/5xx de Supabase (RLS, caida, etc.)
+ * se veia identico a un exito y el codigo se mostraba como guardado sin
+ * estarlo (bug real detectado en vivo en el evento de Mexico). Ahora
+ * reintenta con backoff corto y devuelve si de verdad quedo guardado.
  */
-export async function submitRegistration(code: string, fields: RegistrationFields): Promise<void> {
-  if (!env.rankingDb.url || !env.rankingDb.apiKey) return;
-  try {
-    await fetch(`${env.rankingDb.url}/rest/v1/registrations`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: env.rankingDb.apiKey,
-        Authorization: `Bearer ${env.rankingDb.apiKey}`,
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({
-        code,
-        country: env.country,
-        experience: RANKING_EXPERIENCE,
-        name: fields.name,
-        email: fields.email,
-        company: fields.company ?? null,
-        phone: fields.phone ?? null,
-        area: fields.area ?? null,
-      }),
-    });
-  } catch {
-    // Sin red: el codigo no queda recuperable remotamente por ahora.
+export async function submitRegistration(code: string, fields: RegistrationFields): Promise<boolean> {
+  if (!env.rankingDb.url || !env.rankingDb.apiKey) return false;
+
+  for (const delay of REGISTER_RETRY_DELAYS_MS) {
+    if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
+    try {
+      const res = await fetch(`${env.rankingDb.url}/rest/v1/registrations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: env.rankingDb.apiKey,
+          Authorization: `Bearer ${env.rankingDb.apiKey}`,
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          code,
+          country: env.country,
+          experience: RANKING_EXPERIENCE,
+          name: fields.name,
+          email: fields.email,
+          company: fields.company ?? null,
+          phone: fields.phone ?? null,
+          area: fields.area ?? null,
+        }),
+      });
+      if (res.ok) return true;
+    } catch {
+      // Sin red en este intento - se reintenta abajo.
+    }
   }
+  return false;
 }
 
 export type RegistrationLookup =

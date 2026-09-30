@@ -26,6 +26,7 @@ export function RegisterId() {
   const [checking, setChecking] = useState(false);
   const [showAdvertencia, setShowAdvertencia] = useState(false);
   const [showNoEncontrado, setShowNoEncontrado] = useState(false);
+  const [showErrorConexion, setShowErrorConexion] = useState(false);
 
   const code = `${blocks[0]}-${blocks[1]}`;
   const canSubmit = blocks[0].length === 3 && blocks[1].length === 3 && !checking;
@@ -34,6 +35,11 @@ export function RegisterId() {
     if (!canSubmit) return;
     setChecking(true);
     const lookup = await lookupRegistrationByCode(code);
+    if (lookup.status === "error") {
+      setChecking(false);
+      setShowErrorConexion(true);
+      return;
+    }
     if (lookup.status !== "found") {
       setChecking(false);
       setShowNoEncontrado(true);
@@ -83,6 +89,13 @@ export function RegisterId() {
         <img className={styles.warningIcon} src={iconWarning} alt="" aria-hidden="true" />
         <p className={modalStyles.text}>
           No encontramos ese código. Verifica que esté bien escrito o regístrate de nuevo.
+        </p>
+      </Modal>
+
+      <Modal open={showErrorConexion} onClose={() => setShowErrorConexion(false)}>
+        <img className={styles.warningIcon} src={iconWarning} alt="" aria-hidden="true" />
+        <p className={modalStyles.text}>
+          Sin conexión por ahora. Tu código puede seguir siendo válido — inténtalo de nuevo en unos segundos.
         </p>
       </Modal>
     </ScreenShell>

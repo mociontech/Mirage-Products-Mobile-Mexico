@@ -1,4 +1,4 @@
-import { env, RANKING_EXPERIENCE } from "../config/env";
+import { env } from "../config/env";
 
 export interface RankingEntry {
   participant_name: string | null;
@@ -38,26 +38,71 @@ export function prefetchTopRanking(): void {
   });
 }
 
+/**
+ * Lee `ranking_combined` (promedio catalogo+memory_match por persona, ver
+ * docs/supabase-schema.sql) en vez de `ranking_by_experience` filtrado por
+ * esta experiencia - es el ranking que en verdad decide el premio. Antes
+ * mostraba el top de esta experiencia sola, lo que causo que el dia del
+ * evento un puntaje alto aca se confundiera con haber ganado. La vista
+ * combinada expone `final_score` en vez de `score`, se remapea aca para no
+ * tocar el resto de la pantalla.
+ */
 export async function fetchTopRanking(): Promise<RankingEntry[]> {
   if (!env.rankingDb.url || !env.rankingDb.apiKey) return [];
 
   try {
     const query = new URLSearchParams({
       country: `eq.${env.country}`,
-      experience: `eq.${RANKING_EXPERIENCE}`,
       order: "position.asc",
       limit: "5",
     });
-    const res = await fetch(`${env.rankingDb.url}/rest/v1/ranking_by_experience?${query.toString()}`, {
+    const res = await fetch(`${env.rankingDb.url}/rest/v1/ranking_combined?${query.toString()}`, {
       headers: {
         apikey: env.rankingDb.apiKey,
         Authorization: `Bearer ${env.rankingDb.apiKey}`,
       },
     });
     if (!res.ok) return [];
-    const rows = (await res.json()) as RankingEntry[];
-    return Array.isArray(rows) ? rows : [];
+    const rows = (await res.json()) as Array<{ participant_name: string | null; final_score: number; position: number }>;
+    if (!Array.isArray(rows)) return [];
+    return rows.map((row) => ({ participant_name: row.participant_name, score: row.final_score, position: row.position }));
   } catch {
     return [];
+  }
+}
+
+/**
+ * Puesto de una persona puntual en el ranking general (combinado) - usado en
+ * la pantalla de score para mostrar, por separado del puntaje de esta
+ * experiencia, en que puesto va esa persona en el ranking que decide el
+ * premio.
+ */
+export interface CombinedPositionEntry {
+  position: number;
+  finalScore: number;
+}
+
+export async function fetchMyCombinedPosition(email: string): Promise<CombinedPositionEntry | null> {
+  if (!env.rankingDb.url || !env.rankingDb.apiKey || !email) return null;
+
+  try {
+    const query = new URLSearchParams({
+      participant_id: `eq.${email.trim().toLowerCase()}`,
+      country: `eq.${env.country}`,
+      select: "position,final_score",
+      limit: "1",
+    });
+    const res = await fetch(`${env.rankingDb.url}/rest/v1/ranking_combined?${query.toString()}`, {
+      headers: {
+        apikey: env.rankingDb.apiKey,
+        Authorization: `Bearer ${env.rankingDb.apiKey}`,
+      },
+    });
+    if (!res.ok) return null;
+    const rows = (await res.json()) as Array<{ position: number; final_score: number }>;
+    const row = rows[0];
+    return row ? { position: row.position, finalScore: row.final_score } : null;
+  } catch {
+    return null;
   }
 }
