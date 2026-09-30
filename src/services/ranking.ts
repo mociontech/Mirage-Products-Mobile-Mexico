@@ -1,5 +1,17 @@
 import { env } from "../config/env";
 
+/**
+ * Fecha local (YYYY-MM-DD) de "ahora" en la zona horaria del pais de este
+ * despliegue - tiene que dar el mismo valor que el event_day calculado en
+ * ranking_by_experience/ranking_combined (ver docs/supabase-schema.sql del
+ * proyecto Catalogo). El ranking (y el premio) se maneja por dia: cada dia
+ * del evento de una semana arranca en position 1 de nuevo.
+ */
+function getEventDay(): string {
+  const timeZone = env.country === "CO" ? "America/Bogota" : "America/Mexico_City";
+  return new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+}
+
 export interface RankingEntry {
   participant_name: string | null;
   score: number;
@@ -53,6 +65,7 @@ export async function fetchTopRanking(): Promise<RankingEntry[]> {
   try {
     const query = new URLSearchParams({
       country: `eq.${env.country}`,
+      event_day: `eq.${getEventDay()}`,
       order: "position.asc",
       limit: "5",
     });
@@ -89,6 +102,7 @@ export async function fetchMyCombinedPosition(email: string): Promise<CombinedPo
     const query = new URLSearchParams({
       participant_id: `eq.${email.trim().toLowerCase()}`,
       country: `eq.${env.country}`,
+      event_day: `eq.${getEventDay()}`,
       select: "position,final_score",
       limit: "1",
     });
