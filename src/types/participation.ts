@@ -15,6 +15,8 @@ export interface Participation {
   productId: string | null;
   /** round(productos distintos vistos / total) * 100 - ver Catalog.tsx#handleFinish. */
   points: number;
+  /** Todos los productos distintos que vio, no solo el ultimo - para "productos mas vistos". */
+  viewedProductIds: string[];
   /** Unica por sesion terminada, para que un reintento del outbox nunca duplique el registro. */
   idempotencyKey: string;
   /** epoch ms */

@@ -148,6 +148,7 @@ async function submitRanking(participation: Participation, email: string | null)
       score: participation.points,
       submitted_at: new Date(participation.ts).toISOString(),
       is_anonymous: isAnonymous,
+      viewed_products: participation.viewedProductIds ?? null,
     }),
   });
   if (res.status === 409) return;
